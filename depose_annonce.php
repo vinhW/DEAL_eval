@@ -35,9 +35,9 @@ if($_POST){ // equivalent a !empty($_POST), qui signifie que le formulaire a ét
     if(!isset($_POST['prix']) || ($_POST['prix'] <= 0)  ){// si la civilité est diffente de 'm' et 'f' en meme temps
                 $contenu .= '<div class="alert alert-danger">Le prix est invalide</div>';
     }
-    if(!isset($_POST['ville']) || strlen($_POST['ville']) < 1 || strlen($_POST['ville']) > 20){ // si le champs pseudo n'existe pas ou que la 
+    if(!isset($_POST['ville']) || strlen($_POST['ville']) < 1 || strlen($_POST['ville']) > 50){ // si le champs pseudo n'existe pas ou que la 
                 // taille est trop court ou trop long, on met un message a l'internaute
-                $contenu .= '<div class="alert alert-danger">La pays doit contenir entre 1 et 20 caracteres</div>';
+                $contenu .= '<div class="alert alert-danger">La ville doit contenir entre 1 et 20 caracteres</div>';
     }
             // if(!isset($_POST['ville']) || strlen($_POST['ville']) < 2 || strlen($_POST['ville']) > 40){ // si le champs pseudo n'existe pas ou que la 
             //     // taille est trop court ou trop long, on met un message a l'internaute
@@ -74,13 +74,14 @@ if($_POST){ // equivalent a !empty($_POST), qui signifie que le formulaire a ét
     if(empty($contenu)){
         
      
-
+                $prix = str_replace(' ','',$_POST['prix']);
+                $prix = str_replace(',','.',$prix);
                 $requete = executeRequete("REPLACE INTO annonce VALUES(:id_annonce, :titre, :description_courte, :description_longue, :prix, :photo, :pays, :ville, :adresse, :code_postal, :membre_id, :categorie_id, NOW() )", array(
                                                                     ':id_annonce' => $_POST['id_annonce'],
-                                                                    ':titre' => $_POST['titre'],
+                                                                    ':titre' =>$_POST['titre'],
                                                                     ':description_courte' => $_POST['description_courte'],
                                                                     ':description_longue' => $_POST['description_longue'],
-                                                                    ':prix' => $_POST['prix'],
+                                                                    ':prix' => $prix, //$_POST['prix'],
                                                                     ':photo' => $photo_bdd,
                                                                     ':pays' => $_POST['pays'],
                                                                     ':ville' => $_POST['ville'],
@@ -93,12 +94,13 @@ if($_POST){ // equivalent a !empty($_POST), qui signifie que le formulaire a ét
         
         ));
 
-   debug($requete);
+  
 
         if($requete){// si la fonction executeRequete retourne un objet PDOStatement (donc implicitement evalué a TRUE), cest la requete a marché
-          
-            header('location:traitement_annonce.php');
-            exit();
+          $_POST = array();
+            // header('location:traitement_annonce.php');
+            // exit();
+            $contenu .= '<div class="alert alert-info">l\'annonce est deposé avec succès </div>';
 
         }
         else{ // sinon on a recu false en cas d'erreur sur la requete
@@ -107,7 +109,7 @@ if($_POST){ // equivalent a !empty($_POST), qui signifie que le formulaire a ét
         
         }// fin if(empty($contenu));
         } // fin du if($_POST)
-
+ debug($_POST);
     //8- remplissage du formulaire de modification de produit :
         if(isset($_GET['id_annonce'])){// si on a recu l'id_produit dans l'URL, c'est qu'on a demandé la modification du produit
             // On selectionne les infos du produit en BDD pour remplir le formulaire :

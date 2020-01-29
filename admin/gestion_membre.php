@@ -42,17 +42,17 @@ if (!estAdmin()){
 debug($_POST);
 
             if(empty($contenu)){
-                    $membre = executeRequete("SELECT * FROM membre WHERE pseudo = :pseudo",array(':pseudo' => $_POST['pseudo']));
+                    // $membre = executeRequete("SELECT * FROM membre WHERE pseudo = :pseudo",array(':pseudo' => $_POST['pseudo']));
                         
                         // sinon on peut inscrire le membre
                             $mdp = password_hash($_POST['mdp'], PASSWORD_DEFAULT); // Nous hashons le mdp avec cete fonction qui utilise a l'heure actuelle l'agorithme bcrypt.
                             // Lors de la connexion de l'internaute, il faudra comparer le hash de connexion avec celui de la BDD.
 
                 
-            $requete = executeRequete("REPLACE INTO membre VALUES(:id_membre, :pseudo, :mdp, :nom, :prenom, :telephone, :email, :civilite, :statut, NOW())", array(
+            $requete = executeRequete("REPLACE INTO membre VALUES(:id_membre, :pseudo/*, :mdp*/, :nom, :prenom, :telephone, :email, :civilite, :statut, NOW())", array(
                                                                 ':id_membre' => $_POST['id_membre'],
                                                                 ':pseudo' => $_POST['pseudo'],
-                                                                ':mdp' => $_POST['mdp'],
+                                                                // ':mdp' => $_POST['mdp'],
                                                                 ':nom' => $_POST['nom'],
                                                                 ':prenom' => $_POST['prenom'],
                                                                 ':telephone' => $_POST['telephone'],
@@ -97,7 +97,7 @@ if(isset($_GET['id_membre']) && isset($_GET['action']) && $_GET['action'] == 'su
 $resultat = executeRequete("SELECT * FROM membre"); // on selectionne tout les produits
 $contenu .= '<div>Nombre de membres : ' . $resultat-> rowCount() .'</div>';
 
-$contenu .= '<div class"table-responsive">';
+$contenu .= '<div class"table-responsive ">';
     $contenu .='<table class="table">';
     // Lignes des entête du tableau :
     $contenu .= '<tr>';
@@ -154,6 +154,8 @@ require_once '../inc/header.php.';
     <li><a class="nav-link " href="../gestion_annonce.php">Gestion des annonces</a></li>
     <li><a class="nav-link" href="gestion_notes.php">Gestion des notes</a></li>
     <li><a class="nav-link" href="gestion_commentaires.php">Gestion des commentaires</a></li>
+    <li><a class="nav-link" href="gestion_statistique.php">Gestion des statistiques</a></li>
+
 
 </ul>
 
@@ -165,16 +167,13 @@ echo $contenu; //pour afficher notament le tableau des produits
     <div>
         <div>
             <input type="hidden" name="id_membre" value="<?php echo $membre_actuel['id_membre'] ?? 0 ; ?>">
-            <!-- On met un type hidden pour eviter de le modifier par accident. On precise une value a 0 pour que lors de l'insertion en BDD l'id_produit s'auto-incremente (creation de produit). -->
         </div>
         <div><label for="pseudo">pseudo</label></div>
         <div><input type="text" name="pseudo" id="pseudo" value="<?php echo $membre_actuel['pseudo'] ?? ''; ?>"></div>
     </div>
-
-    <div>
-        <div><label for="mdp">mot de passe</label></div>
-        <div><input type="password" disabled="disabled" name="mdp" id="mdp" value="<?php echo $membre_actuel['mdp'] ?? ''; ?>"></div>
-    </div>
+    <!-- <div>
+        <div><input type="hidden" name="mdp" id="mdp" value="<?php echo $membre_actuel['mdp'] ?? ''; ?>"></div>
+    </div> -->
 
     <div>
         <div><label for="nom">Nom</label></div>
@@ -199,7 +198,7 @@ echo $contenu; //pour afficher notament le tableau des produits
         <div><label>Civilité</label></div>
         <div><input type="radio" name="civilite" id="homme" value="m" checked><label for="homme">Homme</label></div>
         <div><input type="radio" name="civilite" id="Femme" value="f"
-                <?php if(isset($_POST['civilite']) && $_POST['civilite'] == 'f') echo 'checked'; ?>><label
+                <?php if((isset($_POST['civilite']) && $_POST['civilite'] == 'f' ) || (isset($membre_actuel) && $membre_actuel['civilite'] == 'f')) echo 'checked'; ?>><label
                 for="Femme">Femme</label></div>
     </div>
     <div>
@@ -212,7 +211,7 @@ echo $contenu; //pour afficher notament le tableau des produits
     </div>
 
 
-    <div class="mt-2"><input type="submit" value="s'inscrire"></div>
+    <div class="mt-2"><input type="submit" value="valider"></div>
 
 
 </form>
@@ -221,4 +220,5 @@ echo $contenu; //pour afficher notament le tableau des produits
 
 
 <?php
+debug($_POST);
 require_once '../inc/footer.php.';

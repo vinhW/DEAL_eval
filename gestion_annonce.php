@@ -124,7 +124,7 @@ if(isset($_GET['id_annonce']) && isset($_GET['action']) && $_GET['action'] == 's
 
 // 6. Affichage des produits dans le back-office :
 $resultat = executeRequete("SELECT a.id_annonce, a.titre as titreA, description_courte, description_longue, prix, photo, pays, ville, adresse, code_postal, m.pseudo, c.titre as titreC, a.date_enregistrement FROM annonce a INNER JOIN membre m ON a.membre_id = m.id_membre INNER JOIN categorie C ON a.categorie_id = c.id_categorie"); // on selectionne tout les produits
-// $contenu .= '<div>Nombre d\'annonces : ' . $resultat-> rowCount() .'</div>';
+$contenu .= '<div>Nombre d\'annonces : ' . $resultat-> rowCount() .'</div>';
 
 $contenu .= '<div class"table-responsive">';
     $contenu .='<table class="table">';
@@ -191,6 +191,8 @@ require_once 'inc/header.php.';
     <li><a class="nav-link active" href="gestion_annonce.php">Gestion des annonces</a></li>
     <li><a class="nav-link" href="admin/gestion_notes.php">Gestion des notes</a></li>
     <li><a class="nav-link" href="admin/gestion_commentaires.php">Gestion des commentaires</a></li>
+    <li><a class="nav-link" href="admin/gestion_statistique.php">Gestion des statistiques</a></li>
+
  
 </ul>
 

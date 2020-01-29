@@ -16,17 +16,18 @@ if($_POST){ // equivalent a !empty($_POST), qui signifie que le formulaire a ét
                 // taille est trop court ou trop long, on met un message a l'internaute
                 $contenu .= '<div class="alert alert-danger">Le titre doit contenir entre 4 et 20 caracteres.</div>';
     }
-    if(!isset($_POST['mos_cles']) || strlen($_POST['mots_cles']) < 5){ // si le champs pseudo n'existe pas ou que la 
+    if(!isset($_POST['mots_cles']) || strlen($_POST['mots_cles']) < 5){ // si le champs pseudo n'existe pas ou que la 
                 // taille est trop court ou trop long, on met un message a l'internaute
                 $contenu .= '<div class="alert alert-danger">La categorie doit contenir entre 8 et 20 caracteres.</div>';
     }
 
     if(empty($contenu)){
         
-        $requete = executeRequete("REPLACE INTO categorie VALUES(:id_categorie, :titre, :mots_cles )", array(
-                                                                ':id_categorie' => $_POST['id_categorie'],
-                                                                ':titre' => $_POST['titre'],
-                                                                ':mots_cles' => $_POST['mots_cles']));
+        $requete = executeRequete("UPDATE categorie SET titre=:titre, mots_cles = :mots_cles WHERE id_categorie=:id_categorie", array(':id_categorie' =>$_POST['id_categorie'],':titre'=>$_POST['titre'], ':mots_cles' =>$_POST['mots_cles']));
+        // $requete = executeRequete("REPLACE INTO categorie VALUES (:id_categorie, :titre, :mots_cles )", array(
+        //                                                         ':id_categorie' => $_POST['id_categorie'],
+        //                                                         ':titre' => $_POST['titre'],
+        //                                                         ':mots_cles' => $_POST['mots_cles']));
                                                               
         // REPLACE INTO se comporete comme un INSERT quand l'id_produit n'existe pas (0), ou  comme un UPDATE quand l'id_produit fourni existe
         if($requete){// si la fonction executeRequet retourne un objet PDOStatement (donc implicitement evalué a TRUE), cest la requete a marché
@@ -117,6 +118,8 @@ require_once '../inc/header.php.';
     <li><a class="nav-link" href="../gestion_annonce.php">Gestion des annonces</a></li>
     <li><a class="nav-link" href="gestion_notes.php">Gestion des notes</a></li>
     <li><a class="nav-link" href="gestion_commentaires.php">Gestion des commentaires</a></li>
+    <li><a class="nav-link" href="gestion_statistique.php">Gestion des statistiques</a></li>
+
  
 </ul>
 
