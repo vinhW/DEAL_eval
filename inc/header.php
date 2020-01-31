@@ -34,13 +34,13 @@
                     
                 
                         
-                    echo '<li><a class="nav-link" href="'.RACINE_SITE.'Contact.php">Nous Contacter</a></li>';
+            
                         if(estAdmin()){
-                            echo '<li><a class="nav-link" href="'.RACINE_SITE.'admin/gestion_categorie.php">Gestion de boutique</a></li>';
+                            echo '<li><a class="nav-link" href="'.RACINE_SITE.'admin/gestion_categorie.php">Gestion du site</a></li>';
                         }
                         if(estConnecte()){ // Membre connecté
-                            echo '<li><a class="nav-link" href="'.RACINE_SITE.'profil.php">'.$_SESSION['membre']['prenom'].'</a></li>';
                             echo '<li><a class="nav-link" href="'.RACINE_SITE.'depose_annonce.php">Déposer une annonce</a></li>';   
+                            echo '<li><a class="nav-link" href="'.RACINE_SITE.'profil.php">'.$_SESSION['membre']['prenom'].'</a></li>';
                             echo '<li><a class="nav-link" href="'.RACINE_SITE.'connexion.php?action=deconnexion">Déconnexion</a></li>';      
                    
                         }else{ // membre deconnecté

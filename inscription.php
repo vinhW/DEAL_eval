@@ -70,22 +70,10 @@ debug($_POST);
                             else{
                                 $contenu .='<div class="alert alert-danger">oups, erreur lors de l\'enregistrement... Veuillez essayer plus tard .</div>';
                             }
-
-
                         }
-
-
                 }// fin du if(empty($contenu))
 
-
-
-
-
         } // fin du   if(!EMPTY($_POST))
-
-
-
-
 require_once 'inc/header.php';
 ?>
 

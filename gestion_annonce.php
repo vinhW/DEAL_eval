@@ -6,6 +6,7 @@ if (!estAdmin()){
 }
 // debug($_POST);
 $produit = array();
+$affiche_formulaire = false;
 $contenu_categorie = '';
 $requete_categorie = executeRequete("SELECT * FROM categorie ");
 
@@ -17,6 +18,7 @@ $contenu_categorie .= '<option value="'.$resultat_categorie['id_categorie'].'" t
     if(isset($_GET['id_annonce']) && isset($_GET['action']) && $_GET['action'] == 'modifier'){
            $resultat = executeRequete("SELECT a.id_annonce, a.titre as titreA, description_courte, description_longue, prix, photo, pays, ville, adresse, code_postal, m.pseudo, c.titre as titreC, a.date_enregistrement FROM annonce a INNER JOIN membre m ON a.membre_id = m.id_membre INNER JOIN categorie C ON a.categorie_id = c.id_categorie WHERE id_annonce = :id_annonce", array(':id_annonce' => $_GET['id_annonce']));
             $produit_actuel = $resultat->fetch(PDO::FETCH_ASSOC);// pas de while car nous avons qu'un seul produit par id
+            $affiche_formulaire = true;
         }
 
 
@@ -76,14 +78,14 @@ if($_POST){ // equivalent a !empty($_POST), qui signifie que le formulaire a ét
 debug($_POST);
 
 if(empty($contenu)){
- 
-    $requete = executeRequete("REPLACE INTO annonce VALUES(:id_annonce, :titre, :description_courte, :description_longue, :prix, :photo, :pays, :ville, :adresse, :code_postal, :membre_id, :categorie_id, NOW())", array(
+ // mettre en UPDATE
+    $requete = executeRequete("UPDATE annonce SET titre = :titre, description_courte = :description_courte, description_longue = :description_longue, prix = :prix, photo = :photo, pays = :pays, ville = :ville,  adresse = :adresse, code_postal = :code_postal, membre_id = :membre_id, categorie_id = :categorie_id WHERE id_annonce = :id_annonce", array(
                                                                 ':id_annonce' => $_POST['id_annonce'],
                                                                 ':titre' => $_POST['titre'],
                                                                 ':description_courte' => $_POST['description_courte'],
                                                                 ':description_longue' => $_POST['description_longue'],
                                                                 ':prix' => $_POST['prix'],
-                                                                ':photo' => $photo_bdd,
+                                                                ':photo' => '$photo_bdd',
                                                                 ':pays' => $_POST['pays'],
                                                                 ':ville' => $_POST['ville'],
                                                                 ':adresse' => $_POST['adresse'],
@@ -96,7 +98,8 @@ if(empty($contenu)){
     )); 
 // REPLACE INTO se comporete comme un INSERT quand l'id_produit n'existe pas (0), ou  comme un UPDATE quand l'id_produit fourni existe
     if($requete){// si la fonction executeRequet retourne un objet PDOStatement (donc implicitement evalué a TRUE), cest la requete a marché
-        $contenu .= '<div class="alert alert-success">L\'annonce a été enregistré.</div>';
+        $contenu .= '<div class="alert alert-success">L\'annonce a été modifié avec succès.</div>';
+        $affiche_formulaire = false;
     }  
         else{ // sinon on a recu false en cas d'erreur sur la requete
             $contenu .= '<div class="alert alert-danger">Erreur sur la modification ...</div>';
@@ -124,7 +127,7 @@ if(isset($_GET['id_annonce']) && isset($_GET['action']) && $_GET['action'] == 's
 
 // 6. Affichage des produits dans le back-office :
 $resultat = executeRequete("SELECT a.id_annonce, a.titre as titreA, description_courte, description_longue, prix, photo, pays, ville, adresse, code_postal, m.pseudo, c.titre as titreC, a.date_enregistrement FROM annonce a INNER JOIN membre m ON a.membre_id = m.id_membre INNER JOIN categorie C ON a.categorie_id = c.id_categorie"); // on selectionne tout les produits
-// $contenu .= '<div>Nombre d\'annonces : ' . $resultat-> rowCount() .'</div>';
+$contenu .= '<div>Nombre d\'annonces : ' . $resultat-> rowCount() .'</div>';
 
 $contenu .= '<div class"table-responsive">';
     $contenu .='<table class="table">';
@@ -167,7 +170,7 @@ while ($produit = $resultat->fetch(PDO::FETCH_ASSOC)) { // produit est un array 
         }
      
         $contenu .= '<td>
-                            <a href="?action=modifier&id_annonce='. $produit['id_annonce'] .'">modifier</a> |
+                            <a href="?action=modifier&id_annonce='. $produit['id_annonce'] .'#formulaire">modifier</a> |
                             <a href="?action=supprimer&id_annonce='. $produit['id_annonce'] .'" onclick ="return confirm(\' Etes-vous certain de vouloir supprimer ce produit ?\')">supprimer</a>
                     </td>';
 
@@ -191,15 +194,17 @@ require_once 'inc/header.php.';
     <li><a class="nav-link active" href="gestion_annonce.php">Gestion des annonces</a></li>
     <li><a class="nav-link" href="admin/gestion_notes.php">Gestion des notes</a></li>
     <li><a class="nav-link" href="admin/gestion_commentaires.php">Gestion des commentaires</a></li>
+    <li><a class="nav-link" href="admin/gestion_statistique.php">Gestion des statistiques</a></li>
+
  
 </ul>
 
 
 <?php
 echo $contenu; //pour afficher notament le tableau des produits
-
+if($affiche_formulaire):
 ?>
-<form method='post' action="" enctype="multipart/form-data">
+<form method='post' action="" id="formulaire" enctype="multipart/form-data">
     <!-- enctype specifie que le formulaire envoie des données binaires (fichier) en plus du texte (champs du formaulaire) : permet d'uploader un fichier photo -->
     <div>
         <input type="hidden" name="id_annonce" value="<?php echo $_POST['id_annonce'] ?? $produit_actuel['id_annonce'] ?? 0 ; ?>">
@@ -276,4 +281,5 @@ echo $contenu; //pour afficher notament le tableau des produits
 
 </form>
 <?php 
+endif;
 require_once 'inc/footer.php.';

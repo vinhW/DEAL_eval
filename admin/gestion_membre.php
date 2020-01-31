@@ -6,6 +6,18 @@ if (!estAdmin()){
     exit(); //on quitte le script
 }
 
+$affiche_formulaire = false;
+
+if(isset($_GET['id_membre']) && isset($_GET['action']) && $_GET['action'] == 'modifier'){// si on a recu l'id_produit dans l'URL, c'est qu'on a demandé la modification du produit
+        // On selectionne les infos du produit en BDD pour remplir le formulaire :
+            $resultat = executeRequete( "SELECT * FROM membre WHERE id_membre = :id_membre", array(':id_membre' => $_GET['id_membre']));
+            $membre_actuel = $resultat->fetch(PDO::FETCH_ASSOC);// pas de while car nous avons qu'un seul produit par id
+            $affiche_formulaire = true;
+        }
+
+
+
+
 
  // equivalent a !empty($_POST), qui signifie que le formulaire a été envoyé
   if(!empty($_POST)){ // si on a cliqué sur s'inscrire
@@ -14,10 +26,10 @@ if (!estAdmin()){
                 // taille est trop court ou trop long, on met un message a l'internaute
                 $contenu .= '<div class="alert alert-danger">Le pseudo doit contenir entre 4 et 20 caracteres.</div>';
             }
-            if(!isset($_POST['mdp']) || strlen($_POST['mdp']) < 8 || strlen($_POST['mdp']) > 250){ // si le champs pseudo n'existe pas ou que la 
-                // taille est trop court ou trop long, on met un message a l'internaute
-                $contenu .= '<div class="alert alert-danger">Le mot de passe doit contenir entre 8 et 20 caracteres.</div>';
-            }
+            // if(!isset($_POST['mdp']) || strlen($_POST['mdp']) < 8 || strlen($_POST['mdp']) > 250){ // si le champs pseudo n'existe pas ou que la 
+            //     // taille est trop court ou trop long, on met un message a l'internaute
+            //     $contenu .= '<div class="alert alert-danger">Le mot de passe doit contenir entre 8 et 20 caracteres.</div>';
+            // }
             if(!isset($_POST['nom']) || strlen($_POST['nom']) < 2 || strlen($_POST['nom']) > 20){ // si le champs pseudo n'existe pas ou que la 
                 // taille est trop court ou trop long, on met un message a l'internaute
                 $contenu .= '<div class="alert alert-danger">Le nom doit contenir entre 2 et 20 caracteres.</div>';
@@ -42,17 +54,16 @@ if (!estAdmin()){
 debug($_POST);
 
             if(empty($contenu)){
-                    $membre = executeRequete("SELECT * FROM membre WHERE pseudo = :pseudo",array(':pseudo' => $_POST['pseudo']));
+                    // $membre = executeRequete("SELECT * FROM membre WHERE pseudo = :pseudo",array(':pseudo' => $_POST['pseudo']));
                         
                         // sinon on peut inscrire le membre
                             $mdp = password_hash($_POST['mdp'], PASSWORD_DEFAULT); // Nous hashons le mdp avec cete fonction qui utilise a l'heure actuelle l'agorithme bcrypt.
                             // Lors de la connexion de l'internaute, il faudra comparer le hash de connexion avec celui de la BDD.
 
                 
-            $requete = executeRequete("REPLACE INTO membre VALUES(:id_membre, :pseudo, :mdp, :nom, :prenom, :telephone, :email, :civilite, :statut, NOW())", array(
+            $requete = executeRequete("UPDATE membre SET pseudo= :pseudo, nom = :nom, prenom = :prenom, telephone = :telephone, email = :email, civilite = :civilite, statut = :statut WHERE id_membre = :id_membre", array(
                                                                 ':id_membre' => $_POST['id_membre'],
                                                                 ':pseudo' => $_POST['pseudo'],
-                                                                ':mdp' => $_POST['mdp'],
                                                                 ':nom' => $_POST['nom'],
                                                                 ':prenom' => $_POST['prenom'],
                                                                 ':telephone' => $_POST['telephone'],
@@ -63,7 +74,8 @@ debug($_POST);
   
     // REPLACE INTO se comporete comme un INSERT quand l'id_produit n'existe pas (0), ou  comme un UPDATE quand l'id_produit fourni existe
     if($requete){// si la fonction executeRequet retourne un objet PDOStatement (donc implicitement evalué a TRUE), cest la requete a marché
-        $contenu .= '<div class="alert alert-success">La categorie a été enregistré.</div>';
+        $contenu .= '<div class="alert alert-success">Le membre a bien été modifié.</div>';
+          $affiche_formulaire = false;
     }
     else{ // sinon on a recu false en cas d'erreur sur la requete
         $contenu .= '<div class="alert alert-danger">Erreur lors de l\'enregistrement...</div>';
@@ -75,11 +87,7 @@ debug($_POST);
 } // fin du if($_POST)
 
 //8- remplissage du formulaire de modification de produit :
-if(isset($_GET['id_membre']) && isset($_GET['action']) && $_GET['action'] == 'modifier'){// si on a recu l'id_produit dans l'URL, c'est qu'on a demandé la modification du produit
-        // On selectionne les infos du produit en BDD pour remplir le formulaire :
-            $resultat = executeRequete( "SELECT * FROM membre WHERE id_membre = :id_membre", array(':id_membre' => $_GET['id_membre']));
-            $membre_actuel = $resultat->fetch(PDO::FETCH_ASSOC);// pas de while car nous avons qu'un seul produit par id
-        }
+
 
 //7. Suppression du produit : 
 if(isset($_GET['id_membre']) && isset($_GET['action']) && $_GET['action'] == 'supprimer') {  //si existe id_produit dans l'url, donc dans $_GET, c'est qu'on à demandé la supression di produit
@@ -97,11 +105,11 @@ if(isset($_GET['id_membre']) && isset($_GET['action']) && $_GET['action'] == 'su
 $resultat = executeRequete("SELECT * FROM membre"); // on selectionne tout les produits
 $contenu .= '<div>Nombre de membres : ' . $resultat-> rowCount() .'</div>';
 
-$contenu .= '<div class"table-responsive">';
+$contenu .= '<div class"table-responsive ">';
     $contenu .='<table class="table">';
     // Lignes des entête du tableau :
     $contenu .= '<tr>';
-        $contenu .= '<th>id_produit</th>';
+        $contenu .= '<th>id_membre</th>';
         $contenu .= '<th>pseudo</th>';
         $contenu .= '<th>mdp</th>';
         $contenu .= '<th>nom</th>';
@@ -130,7 +138,7 @@ while ($produit = $resultat->fetch(PDO::FETCH_ASSOC)) { // produit est un array 
             
         }
         $contenu .= '<td>
-                            <a href="?action=modifier&id_membre='. $produit['id_membre'] .'">modifier</a> |
+                            <a href="?action=modifier&id_membre='. $produit['id_membre'] .'#formulaire">modifier</a> |
                             <a href="?action=supprimer&id_membre='. $produit['id_membre'] .'" onclick ="return confirm(\' Etes-vous certain de vouloir supprimer ce produit ?\')">supprimer</a>
                     </td>';
 
@@ -154,26 +162,27 @@ require_once '../inc/header.php.';
     <li><a class="nav-link " href="../gestion_annonce.php">Gestion des annonces</a></li>
     <li><a class="nav-link" href="gestion_notes.php">Gestion des notes</a></li>
     <li><a class="nav-link" href="gestion_commentaires.php">Gestion des commentaires</a></li>
+    <li><a class="nav-link" href="gestion_statistique.php">Gestion des statistiques</a></li>
+
 
 </ul>
 
 
 <?php
 echo $contenu; //pour afficher notament le tableau des produits
+if($affiche_formulaire):
+
 ?>
-<form method="post" action="">
+<form method="post" action="" id="formulaire">
     <div>
         <div>
             <input type="hidden" name="id_membre" value="<?php echo $membre_actuel['id_membre'] ?? 0 ; ?>">
-            <!-- On met un type hidden pour eviter de le modifier par accident. On precise une value a 0 pour que lors de l'insertion en BDD l'id_produit s'auto-incremente (creation de produit). -->
         </div>
         <div><label for="pseudo">pseudo</label></div>
         <div><input type="text" name="pseudo" id="pseudo" value="<?php echo $membre_actuel['pseudo'] ?? ''; ?>"></div>
     </div>
-
     <div>
-        <div><label for="mdp">mot de passe</label></div>
-        <div><input type="password" disabled="disabled" name="mdp" id="mdp" value="<?php echo $membre_actuel['mdp'] ?? ''; ?>"></div>
+        <div><input type="hidden" name="mdp" id="mdp" value="<?php echo $membre_actuel['mdp'] ?? ''; ?>"></div>
     </div>
 
     <div>
@@ -199,7 +208,7 @@ echo $contenu; //pour afficher notament le tableau des produits
         <div><label>Civilité</label></div>
         <div><input type="radio" name="civilite" id="homme" value="m" checked><label for="homme">Homme</label></div>
         <div><input type="radio" name="civilite" id="Femme" value="f"
-                <?php if(isset($_POST['civilite']) && $_POST['civilite'] == 'f') echo 'checked'; ?>><label
+                <?php if((isset($_POST['civilite']) && $_POST['civilite'] == 'f' ) || (isset($membre_actuel) && $membre_actuel['civilite'] == 'f')) echo 'checked'; ?>><label
                 for="Femme">Femme</label></div>
     </div>
     <div>
@@ -212,7 +221,7 @@ echo $contenu; //pour afficher notament le tableau des produits
     </div>
 
 
-    <div class="mt-2"><input type="submit" value="s'inscrire"></div>
+    <div class="mt-2"><input type="submit" value="valider"></div>
 
 
 </form>
@@ -221,4 +230,6 @@ echo $contenu; //pour afficher notament le tableau des produits
 
 
 <?php
+endif;
+debug($_POST);
 require_once '../inc/footer.php.';
