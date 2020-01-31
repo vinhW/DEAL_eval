@@ -28,6 +28,17 @@ if($_POST){
                     }
 
 
+<<<<<<< HEAD
+=======
+if($_POST){
+
+    if(!isset($_POST['commentaire']) || strlen($_POST['commentaire']) < 4 || strlen($_POST['commentaire']) > 150){ // si le champs titre n'existe pas ou que la 
+                    // taille est trop court ou trop long, on met un message a l'internaute
+                    $contenu .= '<div class="alert alert-danger">Le commentaire doit contenir entre 4 et 20 caracteres.</div>';
+                    }
+
+
+>>>>>>> b2ce2e92171b149eed882e9d956c1ae848a003f2
 
     if(empty($contenu)){
        
@@ -108,7 +119,7 @@ $contenu .= '</div>';
 
 require_once '../inc/header.php.';
 // 2. Navigation entre les pages d'administration :
-
+debug($produit);
 ?>
 
 <h1 class="mt-4">Gestion des Commentaires</h1>
@@ -153,6 +164,10 @@ if($affiche_formulaire):
 </form>
 
 <?php
+<<<<<<< HEAD
 endif;
 
+=======
+debug($produit_actuel);
+>>>>>>> b2ce2e92171b149eed882e9d956c1ae848a003f2
 require_once '../inc/footer.php.';

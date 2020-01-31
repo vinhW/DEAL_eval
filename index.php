@@ -5,18 +5,38 @@ require_once 'inc/init.php';
 
 //1- Affichage des categories :
 $resultat = executeRequete("SELECT DISTINCT id_categorie, titre FROM categorie");// On selectionne les differentes categorie
+<<<<<<< HEAD
+=======
+
+    // $contenu_gauche .= '<div class="list-group mb-4">';
+    // On affiche le bouton " tous les produits" :
+        // $contenu_gauche .= '<a href="?categorie=tous" class="list-group-item">Les annonces</a>';
+        // On affiche les autres categories :
+>>>>>>> b2ce2e92171b149eed882e9d956c1ae848a003f2
 
     
         while($categorie = $resultat->fetch(PDO::FETCH_ASSOC)){
+<<<<<<< HEAD
              $contenu_gauche .= '<option value='.$categorie['id_categorie'].'>'.$categorie['titre'].'</option>';
         }
+=======
+            // debug($categorie);
+            //  $contenu_gauche .= '<option><a href="?categorie='.$categorie['titre'].'" class="list-group-item" title="'.$categorie['mots_cles'].'">'.$categorie['titre'].'</a></option>';
+             $contenu_gauche .= '<option value='.$categorie['id_categorie'].'>'.$categorie['titre'].'</option>';
+        }
+    // $contenu_gauche .= '</div>';
+>>>>>>> b2ce2e92171b149eed882e9d956c1ae848a003f2
 
 //2- Affichage des produits de la categorie choisie :
 $currentPage = (int)($_GET['page'] ?? 1) ?: 1;
 if($currentPage <= 0){
     throw new Exception('numero de page invalide');
 }
+<<<<<<< HEAD
 // debug($currentPage);
+=======
+debug($currentPage);
+>>>>>>> b2ce2e92171b149eed882e9d956c1ae848a003f2
 $where = "1";
  if(isset($_GET['categorie']) && $_GET['categorie'] != 'tous' ){
      $where .= ' AND categorie_id='.$_GET['categorie'];
@@ -24,6 +44,14 @@ $where = "1";
 
 $count = $pdo->query('SELECT count(id_annonce) FROM  annonce WHERE '.$where);
 
+<<<<<<< HEAD
+=======
+//  if(isset($_GET['categorie']) && $_GET['categorie'] != 'tous' ){
+//     $count = $pdo->query('SELECT count(id_annonce) FROM  annonce WHERE categorie_id = '.$_GET['categorie']);
+//  } else
+//  {
+//     $count = $pdo->query('SELECT count(id_annonce) FROM  annonce');
+>>>>>>> b2ce2e92171b149eed882e9d956c1ae848a003f2
 //  }
     $resultat_count = (int)$count->fetch(PDO::FETCH_NUM)[0];
     // debug($resultat_count);
@@ -43,7 +71,13 @@ if($currentPage > $pages){
         else{
             $donnees = executeRequete("SELECT a.id_annonce, a.photo, a.titre AS titreA, prix, description_courte, c.titre AS titreC, m.pseudo  FROM annonce a INNER JOIN categorie c ON a.categorie_id = c.id_categorie INNER JOIN membre m ON a.membre_id = m.id_membre ORDER BY id_annonce  DESC LIMIT $perpage OFFSET $offset ");// On selectionne donc tous les produits
         }
+<<<<<<< HEAD
       
+=======
+
+        
+
+>>>>>>> b2ce2e92171b149eed882e9d956c1ae848a003f2
             while($produit = $donnees->fetch(PDO::FETCH_ASSOC)){ //Boucle while il y a potentiellement plusieurs produits
               
 
@@ -76,6 +110,7 @@ require_once 'inc/header.php';
 <h1 class="mt-4">Nos annonces</h1>
 <div class="row">
     <div class="col-md-3">
+<<<<<<< HEAD
         <form action=""> <!-- deroulant categorie -->
             <select name="categorie">
             <option value="tous">Toutes les categories</option>
@@ -85,6 +120,12 @@ require_once 'inc/header.php';
 
             <div><input type="submit"></div>
             </form>
+=======
+    <select name="categorie">
+    <option value="tous">Toutes les categories</option>
+        <?php echo $contenu_gauche; // Pour afficher les categories ?>
+    </select>
+>>>>>>> b2ce2e92171b149eed882e9d956c1ae848a003f2
     </div>
 
     <div class="col-md-9">
