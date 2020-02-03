@@ -38,11 +38,7 @@ if($_POST){ // equivalent a !empty($_POST), qui signifie que le formulaire a ét
 
     if(empty($contenu)){
         //  utiliser un update
-<<<<<<< HEAD
         $requete = executeRequete("UPDATE note SET note = ':note' , avis = ':avis'  WHERE id_note =' :id_note'", array(
-=======
-        $requete = executeRequete("REPLACE INTO note VALUES (:id_note, :note , :avis, :membre_id_auteur, :membre_id_cible, NOW())", array(
->>>>>>> b2ce2e92171b149eed882e9d956c1ae848a003f2
                                                                 ':id_note' => $_POST['id_note'],
                                                                 ':note' => $_POST['note'],
                                                                 ':avis' => $_POST['avis']
@@ -64,18 +60,8 @@ if($_POST){ // equivalent a !empty($_POST), qui signifie que le formulaire a ét
 
 // debug($_POST);
 
-<<<<<<< HEAD
 
 // debug($produit_actuel);
-=======
-//8- remplissage du formulaire de modification de produit :
-    if(isset($_GET['id_note']) && isset($_GET['action']) && $_GET['action'] == 'modifier'){// si on a recu l'id_produit dans l'URL, c'est qu'on a demandé la modification du produit
-        // On selectionne les infos du produit en BDD pour remplir le formulaire :
-            $resultat = executeRequete( "SELECT * FROM note WHERE id_note = :id_note", array(':id_note' => $_GET['id_note']));
-            $produit_actuel = $resultat->fetch(PDO::FETCH_ASSOC);// pas de while car nous avons qu'un seul produit par id
-        }
-debug($produit_actuel);
->>>>>>> b2ce2e92171b149eed882e9d956c1ae848a003f2
 //7. Suppression du produit : 
 if(isset($_GET['id_note']) &&  isset($_GET['action']) && $_GET['action'] == 'supprimer') {  //si existe id_produit dans l'url, donc dans $_GET, c'est qu'on à demandé la supression di produit
     $resultat = executeRequete("DELETE FROM note WHERE id_note = :id_note", array(':id_note' => $_GET['id_note']));
@@ -125,11 +111,7 @@ while ($produit = $resultat->fetch(PDO::FETCH_ASSOC)) { // produit_actuel est un
 }
     $contenu .='</table>';
 $contenu .= '</div>';
-<<<<<<< HEAD
 // debug($produit_actuel);
-=======
-//  debug($produit);
->>>>>>> b2ce2e92171b149eed882e9d956c1ae848a003f2
 
 
 require_once '../inc/header.php.';
@@ -160,19 +142,11 @@ if($affiche_formulaire):
                                     <textarea name="avis" id="avis" cols="45" rows="3" ><?php echo $produit_actuel['avis'] ?? '' ; ?></textarea><br>
                                     <label for="note" class="mt-2">Note</label>
                                     <select name="note" id="note" >
-<<<<<<< HEAD
                                         <option checked>1</option>
                                         <option <?php if((isset($produit_actuel['note']) && $produit_actuel['note'] == '2') || (isset($_POST['note']) && $_POST['note'] == '2')) echo 'checked'; ?>>2</option>
                                         <option <?php if((isset($produit_actuel['note']) && $produit_actuel['note'] == '3') || (isset($_POST['note']) && $_POST['note'] == '3')) echo 'checked'; ?>>3</option>
                                         <option <?php if((isset($produit_actuel['note']) && $produit_actuel['note'] == '4') || (isset($_POST['note']) && $_POST['note'] == '4')) echo 'checked'; ?>>4</option>
                                         <option <?php if((isset($produit_actuel['note']) && $produit_actuel['note'] == '5') || (isset($_POST['note']) && $_POST['note'] == '5')) echo 'checked'; ?>>5</option>
-=======
-                                        <option <?php if(isset($produit_actuel['note']) && $produit_actuel['note'] == '1') echo 'checked'; ?>>1</option>
-                                        <option <?php if(isset($produit_actuel['note']) && $produit_actuel['note'] == '2') echo 'checked'; ?>>2</option>
-                                        <option <?php if(isset($produit_actuel['note']) && $produit_actuel['note'] == '3') echo 'checked'; ?>>3</option>
-                                        <option <?php if(isset($produit_actuel['note']) && $produit_actuel['note'] == '4') echo 'checked'; ?>>4</option>
-                                        <option <?php if(isset($produit_actuel['note']) && $produit_actuel['note'] == '5') echo 'checked'; ?>>5</option>
->>>>>>> b2ce2e92171b149eed882e9d956c1ae848a003f2
                                     </select>
                                     <br>
                                  <input type="hidden" name="membre_id_auteur" value="<?php echo $produit_actuel['membre_id_auteur'] ?? '' ; ?>">
@@ -182,10 +156,6 @@ if($affiche_formulaire):
         </form> 
 
 <?php
-<<<<<<< HEAD
 endif;
 // debug($produit_actuel);
-=======
-debug($produit_actuel);
->>>>>>> b2ce2e92171b149eed882e9d956c1ae848a003f2
 require_once '../inc/footer.php.';

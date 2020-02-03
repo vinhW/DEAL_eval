@@ -100,15 +100,11 @@ if($_POST){ // equivalent a !empty($_POST), qui signifie que le formulaire a ét
           $_POST = array();
             // header('location:traitement_annonce.php');
             // exit();
-<<<<<<< HEAD
                                 $contenu .= '<div class="alert alert-success">l\'annonce a bien été deposée...</div>';
                                 $contenu .= '<div class="alert "><a href="depose_annonce.php">cliquez ici pour deposer une autre annonce</a></div>';
 
                                 $affiche_formulaire = false;// pour ne plus afficher le formulaire
 
-=======
-            $contenu .= '<div class="alert alert-info">l\'annonce est deposé avec succès </div>';
->>>>>>> b2ce2e92171b149eed882e9d956c1ae848a003f2
 
         }
         else{ // sinon on a recu false en cas d'erreur sur la requete

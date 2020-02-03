@@ -12,6 +12,7 @@ $requete_categorie = executeRequete("SELECT * FROM categorie ");
 
 while( $resultat_categorie = $requete_categorie->fetch(PDO::FETCH_ASSOC)){
 $contenu_categorie .= '<option value="'.$resultat_categorie['id_categorie'].'" title="'.$resultat_categorie['mots_cles'].'">'. $resultat_categorie['titre'].'</option>';
+
 }
 
 //8- remplissage du formulaire de modification de produit :
@@ -75,16 +76,18 @@ if($_POST){ // equivalent a !empty($_POST), qui signifie que le formulaire a ét
             //On enregistre uniquement le chemin de la photo en BDD, mais pas le fichier en tant que tel. Ce dernier est bien dans le repertoire "photo/" du site.
     }
 
-debug($_POST);
+// debug($_POST);
 
 if(empty($contenu)){
  // mettre en UPDATE
+                $prix = str_replace(' ','',$_POST['prix']);
+                $prix = str_replace(',','.',$prix);
     $requete = executeRequete("UPDATE annonce SET titre = :titre, description_courte = :description_courte, description_longue = :description_longue, prix = :prix, photo = :photo, pays = :pays, ville = :ville,  adresse = :adresse, code_postal = :code_postal, membre_id = :membre_id, categorie_id = :categorie_id WHERE id_annonce = :id_annonce", array(
                                                                 ':id_annonce' => $_POST['id_annonce'],
                                                                 ':titre' => $_POST['titre'],
                                                                 ':description_courte' => $_POST['description_courte'],
                                                                 ':description_longue' => $_POST['description_longue'],
-                                                                ':prix' => $_POST['prix'],
+                                                                ':prix' => $prix,
                                                                 ':photo' => '$photo_bdd',
                                                                 ':pays' => $_POST['pays'],
                                                                 ':ville' => $_POST['ville'],
@@ -234,7 +237,7 @@ if($affiche_formulaire):
      ?>
         </select>
         </div>
-<img src="" alt="">
+
     </div>
     <div>
         <div> <label for="photo">Photo</label></div>
@@ -242,7 +245,7 @@ if($affiche_formulaire):
         <img src="<?php echo $produit_actuel['photo'] ?? ''; ?>" alt="<?php echo $produit_actuel['titreA'] ?? ''; ?>" style="width:90px">
                 <input type="file" name="photo" id="photo" > <!-- ne pas oublier l'attribut enctype sur la balise <form>. -->
                 <?php if(isset($_POST['photo'])){// en cas de modification du produit_actuel
-                
+              
                     echo '<input type="hidden" name="photo_actu" value="photo/'.$_POST['photo'].'">';} ?>  <!--On veut mettre le chemin de la photo actuelle dans $_POST pour le remettre en BDD -->
         </div>
     </div>
@@ -282,4 +285,5 @@ if($affiche_formulaire):
 </form>
 <?php 
 endif;
+// debug($produit_actuel);
 require_once 'inc/footer.php.';

@@ -28,7 +28,6 @@ if($_POST){ // equivalent a !empty($_POST), qui signifie que le formulaire a ét
     }
 
     if(empty($contenu)){
-<<<<<<< HEAD
         if($_POST['id_categorie'] == 0){
                 $requete = executeRequete("INSERT INTO categorie VALUES ( 0, :titre, :mots_cles )", array(
                                                                 ':titre' => $_POST['titre'],
@@ -43,15 +42,6 @@ if($_POST){ // equivalent a !empty($_POST), qui signifie que le formulaire a ét
                                                                 ':mots_cles' => $_POST['mots_cles']));
                                                                 
         }
-=======
-        
-        $requete = executeRequete("UPDATE categorie SET titre=:titre, mots_cles = :mots_cles WHERE id_categorie=:id_categorie", array(':id_categorie' =>$_POST['id_categorie'],':titre'=>$_POST['titre'], ':mots_cles' =>$_POST['mots_cles']));
-        // $requete = executeRequete("REPLACE INTO categorie VALUES (:id_categorie, :titre, :mots_cles )", array(
-        //                                                         ':id_categorie' => $_POST['id_categorie'],
-        //                                                         ':titre' => $_POST['titre'],
-        //                                                         ':mots_cles' => $_POST['mots_cles']));
-                                                              
->>>>>>> b2ce2e92171b149eed882e9d956c1ae848a003f2
         // REPLACE INTO se comporete comme un INSERT quand l'id_produit n'existe pas (0), ou  comme un UPDATE quand l'id_produit fourni existe
         if($requete){// si la fonction executeRequet retourne un objet PDOStatement (donc implicitement evalué a TRUE), cest la requete a marché
         $contenu .= '<div class="alert alert-success">La categorie a été enregistré.</div>';

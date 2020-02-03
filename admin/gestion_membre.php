@@ -61,16 +61,9 @@ debug($_POST);
                             // Lors de la connexion de l'internaute, il faudra comparer le hash de connexion avec celui de la BDD.
 
                 
-<<<<<<< HEAD
             $requete = executeRequete("UPDATE membre SET pseudo= :pseudo, nom = :nom, prenom = :prenom, telephone = :telephone, email = :email, civilite = :civilite, statut = :statut WHERE id_membre = :id_membre", array(
                                                                 ':id_membre' => $_POST['id_membre'],
                                                                 ':pseudo' => $_POST['pseudo'],
-=======
-            $requete = executeRequete("REPLACE INTO membre VALUES(:id_membre, :pseudo/*, :mdp*/, :nom, :prenom, :telephone, :email, :civilite, :statut, NOW())", array(
-                                                                ':id_membre' => $_POST['id_membre'],
-                                                                ':pseudo' => $_POST['pseudo'],
-                                                                // ':mdp' => $_POST['mdp'],
->>>>>>> b2ce2e92171b149eed882e9d956c1ae848a003f2
                                                                 ':nom' => $_POST['nom'],
                                                                 ':prenom' => $_POST['prenom'],
                                                                 ':telephone' => $_POST['telephone'],
@@ -188,15 +181,9 @@ if($affiche_formulaire):
         <div><label for="pseudo">pseudo</label></div>
         <div><input type="text" name="pseudo" id="pseudo" value="<?php echo $membre_actuel['pseudo'] ?? ''; ?>"></div>
     </div>
-<<<<<<< HEAD
     <div>
         <div><input type="hidden" name="mdp" id="mdp" value="<?php echo $membre_actuel['mdp'] ?? ''; ?>"></div>
     </div>
-=======
-    <!-- <div>
-        <div><input type="hidden" name="mdp" id="mdp" value="<?php echo $membre_actuel['mdp'] ?? ''; ?>"></div>
-    </div> -->
->>>>>>> b2ce2e92171b149eed882e9d956c1ae848a003f2
 
     <div>
         <div><label for="nom">Nom</label></div>
@@ -243,9 +230,6 @@ if($affiche_formulaire):
 
 
 <?php
-<<<<<<< HEAD
 endif;
-=======
->>>>>>> b2ce2e92171b149eed882e9d956c1ae848a003f2
 debug($_POST);
 require_once '../inc/footer.php.';
