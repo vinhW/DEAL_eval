@@ -1,6 +1,9 @@
 <?php
 require_once 'inc/init.php';
 $affiche_formulaire = false;
+ $contenu_annonce = '';
+ $message = '';
+ $note = '';
 // exercice profil.
 //1- si le visiteur n'est pas connecté on le redirige vers la page de connexion.
 //2- afficher son profil tel que dessiné au tableau.
@@ -56,48 +59,43 @@ if(!empty($_POST)){
                 ':civilite' => $_POST['civilite']
         ));
 
+          if($contenu){
+            $affiche_formulaire = false;
+          
+        $message = '<div class="alert alert-success">La modification a été realisée avec succès</div>';        
+          }
+  
         $contenu = executeRequete("SELECT * FROM membre WHERE id_membre = :id_membre", array (':id_membre' =>$_POST['id_membre']));
         $membre = $contenu->fetch(PDO::FETCH_ASSOC);
         $_SESSION['membre'] = $membre;
+
     }
 
+      $donnees = executeRequete("SELECT Round(AVG(note), 2) AS note FROM note WHERE membre_id_cible");
+        $note = $donnees->fetch(PDO::FETCH_ASSOC);
+debug($note);
 
         $donnees = executeRequete("SELECT a.id_annonce, a.photo, a.titre AS titreA, prix, description_courte, c.titre AS titreC, m.pseudo FROM annonce a INNER JOIN categorie C ON a.categorie_id = c.id_categorie INNER JOIN membre m ON a.membre_id = m.id_membre WHERE membre_id = :membre_id", array(
               ':membre_id' => $_SESSION['membre']['id_membre']
         ));
 
         while($annonce = $donnees->fetch(PDO::FETCH_ASSOC)){
-
-        $contenu_annonce = '';
-                $contenu_annonce .= '<div class="col-sm-4 mb-4">';
-                    $contenu_annonce .= '<div class="card">';
+          
+                $contenu_annonce .= '<div class="col-3 mr-3 ml-5 mb-3 border border-dark">';
+                    // $contenu_annonce .= '<div class="card">';
                     // image cliquable :
-                        $contenu_annonce .= '<a href="fiche_annonce.php?id_annonce='.$annonce['id_annonce'].'"><img src="'.$annonce['photo'].'" alt="'.$annonce['titreA'].'" class="card-img-top"></a>';
-                        $contenu_annonce .= '<div class="card-body">';
+                        $contenu_annonce .= '<a  href="fiche_annonce.php?id_annonce='.$annonce['id_annonce'].'"><img src="'.$annonce['photo'].'" alt="'.$annonce['titreA'].'" class="card-img-top" ></a>';
+                        // $contenu_annonce .= '<div class="card-body">';
                             $contenu_annonce .= '<h4>'.$annonce['titreA'].'</h4>';
                             $contenu_annonce .= '<h5>'.$annonce['prix'].' €</h5>';
                             $contenu_annonce .= '<p>categorie : '.$annonce['titreC'].' </p>';
                             $contenu_annonce .= '<p>vendeur : '.$annonce['pseudo'].' </p>';
-
-                        $contenu_annonce .= '</div>';
-                    $contenu_annonce .= '</div>';
+                    
+                        // $contenu_annonce .= '</div>';
+                    // $contenu_annonce .= '</div>';
                 
                 $contenu_annonce .= '</div>';
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 require_once 'inc/header.php';
@@ -105,16 +103,18 @@ require_once 'inc/header.php';
 ?>
 <h1>Profil</h1>
 <?php
+echo $message;
     echo '<h2>bonjour ' . $_SESSION['membre']['prenom'].' '.$_SESSION['membre']['nom']. '</h2><br>';
 
-   echo '<div style=" display: flex; justify-content: space-between">';
-   echo     '<div >';
+   echo '<div class="d-flex justify-content-around">';
+   echo     '<div class="col-3">';
 
     echo      'Pseudo : ' .$_SESSION['membre']['pseudo']. '<br><br>';
     echo      'Nom : ' .$_SESSION['membre']['prenom'].' '.$_SESSION['membre']['nom'] .'<br><br>';
     echo      'Telephone : ' .$_SESSION['membre']['telephone']. '<br><br>';
     echo      'Email : ' .$_SESSION['membre']['email']. '<br><br>';
-    echo      '<a href="?action=modifier&id_membre='. $_SESSION['membre']['id_membre'] .'">modifier</a><br>';
+    echo      'Note du vendeur : ' .$note['note']. '<br><br>';
+    echo      '<a href="?action=modifier&id_membre='. $_SESSION['membre']['id_membre'] .'">modifier profil</a><br>';
 ;
     if($_SESSION['membre']['statut'] == 'admin'){
     echo ' <strong>Vous est un administrateur </strong><br><br>';
@@ -172,6 +172,15 @@ if($affiche_formulaire):
 </div>
 <?php
 endif;
+?>
+<h3 class="text-center " >Mes annonces publiées</h3>
+<div class="row mt-4 ">
+
+  <?php
 echo $contenu_annonce;
+?>
+<!-- </div> -->
+
+<?php
 require_once 'inc/footer.php';
 
